@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nomineringar 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { 
+  --gold: #f5d27a; 
+  --metallic: linear-gradient(to bottom, #cfb53b 0%, #f5d27a 50%, #b8860b 100%);
+}
+
+*{box-sizing:border-box}
+
+body {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  background: #000;
+  color: var(--gold);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Bubblorna - Diskreta */
+.lights-container {
+  position: absolute;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.light {
+  position: absolute;
+  width: 80vh; height: 80vh;
+  background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0.03) 40%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: rotateLights 25s infinite ease-in-out;
+}
+
+.light:nth-child(1) { top: -20%; left: -10%; }
+.light:nth-child(2) { bottom: -20%; right: -10%; animation-direction: reverse; }
+.light:nth-child(3) { top: 30%; left: 60%; opacity: 0.3; }
+
+@keyframes rotateLights {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5vw, 5vh) scale(1.1); }
+}
+
+.metallic-text {
+  background: var(--metallic);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 2px 10px rgba(0,0,0,0.7));
+}
+
+.slide {
+  position: absolute;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  transition: all .8s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.active { opacity: 1; pointer-events: auto; }
+
+h1 { font-size: 8vh; letter-spacing: 1vh; margin: 0; }
+h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
+
+.category {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  font-size: 6vh;
+  transition: all 0.9s cubic-bezier(.2,.8,.2,1);
+  z-index: 2;
+  letter-spacing: 0.5vh;
+}
+
+.category.move-up { top: 10%; transform: translate(-50%, 0); }
+
+.nominees {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4vw;
+  margin-top: 12vh;
+  z-index: 2;
+}
+
+.nominee {
+  opacity: 0;
+  transform: translateY(5vh);
+  transition: all .7s ease;
+  font-size: 2.5vh;
+}
+
+.nominee.show { opacity: 1; transform: translateY(0); }
+
+.nominee img {
+  width: 20vw; height: 20vw;
+  max-width: 280px; max-height: 280px;
+  object-fit: cover;
+  border-radius: 1vh;
+  border: 0.4vh solid var(--gold);
+  box-shadow: 0 1vh 3vh rgba(0,0,0,0.8);
+  margin-bottom: 2vh;
+}
+
+.zoom-container {
+  position: absolute;
+  width: 100%; height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 1.2s cubic-bezier(.2,.8,.2,1);
+}
+
+/* UPPDATERAD VINNARRUTA ENLIGT BILD */
+.fullscreen-winner {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: row; /* Sid-vid-sid layout */
+  justify-content: center;
+  align-items: center;
+  gap: 8vw;
+  background: rgba(0,0,0,0.94);
+  backdrop-filter: blur(20px);
+  animation: fadeIn .7s ease;
+  z-index: 10;
+  padding: 0 10vw;
+  text-align: left;
+}
+
+/* Vänster sida: Den runda bilden från din referens */
+.win-left {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fullscreen-winner img {
+  width: 45vh; height: 45vh;
+  max-width: 420px; max-height: 420px;
+  border: 0.5vh solid var(--gold); 
+  box-shadow: 0 0 5vh rgba(245, 210, 122, 0.3);
+  border-radius: 50%; /* Gör bilden helt rund */
+  object-fit: cover;
+}
+
+/* Höger sida: Textblocket */
+.win-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 600px;
+}
+
+/* Den gula "VINNARE"-etiketten */
+.win-tag {
+  background-color: #cfb53b;
+  color: #000;
+  font-weight: bold;
+  padding: 0.8vh 2.5vh;
+  font-size: 2vh;
+  letter-spacing: 0.3vh;
+  margin-bottom: 3vh;
+  text-transform: uppercase;
+}
+
+.fullscreen-winner .name {
+  font-size: 7.5vh;
+  margin: 0 0 2vh 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.win-description {
+  font-family: sans-serif; /* Renare typsnitt för brödtext som på bilden */
+  font-size: 2.2vh;
+  line-height: 1.6;
+  color: #fff;
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* Hälsningsvideo container */
+.video-container {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.end { font-size: 8vh; }
+</style>
+</head>
+<body>
+
+<div class="lights-container">
+  <div class="light"></div>
+  <div class="light"></div>
+  <div class="light"></div>
+</div>
+
+<div id="slides"></div>
+
+<script>
+// HÄR KAN DU SKRIVA DINA EGNA KOMMENTARER PÅ 'desc'. 
+// Om du inte skriver något på 'desc' så används standardmallen automatiskt.
+const data=[
+  {type:"intro"},
+  {
+    type:"category",
+    title:"ÅRETS 7A",
+    winner:1,
+    desc:"En person som verkligen kommit in i klassen med rätt energi. Ser alltid till att hålla igång stämningen och bjuder på ett gott skratt i korridoren.", 
+    nominees:[
+      {name:"Elvis",img:"elvis.jpg"},
+      {name:"Abdulhai",img:"abdulhai.jpg"},
+      {name:"Inez",img:"inez.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS 8A",
+    winner:2,
+    desc:"Klassens självklara mittpunkt. Har en sån där naturligt skön vibe som gör att alla dras till personen, utan att det ens krävs någon ansträngning.",
+    nominees:[
+      {name:"Khodor",img:"khodor.jpg"},
+      {name:"Leo",img:"leo.jpg"},
+      {name:"Joshua",img:"joshua.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS 9A",
+    winner:0,
+    desc:"Ingen diskussion överhuvudtaget, vinsten var spikad sedan dag ett. Hela gänget vet exakt vem som har styrt upp stämningen det här året.", // Lämnar du den tom så körs din gamla standardmall
+    nominees:[
+      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Alfred",img:"alfred.jpg"},
+      {name:"Runa",img:"runa.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS LÄRARE",
+    winner:2, 
+    desc:"Ingen är lika skoltrött som vår kära Ulrika, varje lektion blir som en hemmafest.",
+    nominees:[
+      {name:"Per",img:"per.jpg"},
+      {name:"Jerker",img:"jerker.jpg"},
+      {name:"Ulrika",img:"ulrika.png"}
+    ]
+  },
+  {
+    type:"video",
+    src:"https://i.imgur.gg/KXN15hr-ulrika.mp4",
+    hasPlayed: false
+  },
+  {
+    type:"category",
+    title:"ÅRETS MINGOS LEDARE",
+    winner:1,
+    desc:"Fritidsgårdens absoluta stöttepelare. Håller ordning på Mingos när alla andra har noll koll, och ser till att det alltid är ett ställe man vill hänga på.",
+    nominees:[
+      {name:"Ousmane",img:"ousmane.jpg"},
+      {name:"Josefina",img:"josefina.jpg"},
+      {name:"Albin",img:"albin.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS EPA RAGGARE",
+    winner:2,
+    desc:"Skolans utan tvekan mest högljudda bas. Man hör exakt när den här personen svänger in på parkeringen på morgonen, flera minuter innan man faktiskt ser bilen.",
+    nominees:[
+      {name:"Yngve",img:"yngve.jpg"},
+      {name:"Elmer",img:"elmer.jpg"},
+      {name:"Alfred",img:"alfred.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS STAMMIS PÅ COOP",
+    winner:2,
+    desc:"De på Coop tror nog att han jobbar där vid det här laget. Har spenderat mer pengar på energidryck än på mat.",
+    nominees:[
+      {name:"Ingmar",img:"ingmar.jpg"},
+      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Ahmed",img:"ahmed.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS \"VA ÄR DET PROV\"",
+    winner:1,
+    desc:"Kommer alltid på att det är prov 5 minuter efter att det har börjat.",
+    nominees:[
+      {name:"Melkyas",img:"melkyas.jpg"},
+      {name:"Khodor",img:"khodor.jpg"},
+      {name:"Alfred",img:"alfred.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS GYMBRO",
+    winner:0,
+    desc:"Pratar bara om sina nya PB och letar efter speglar i korridoren för att flexa formen.",
+    nominees:[
+      {name:"Wilmer",img:"wilmer.jpg"},
+      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Ye",img:"ye.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS PLAYER",
+    winner:2,
+    desc:"Har ett halvt dussin olika tjejer på sin Snapchat samtidigt. Skärmtiden består till 90% av att svara på snaps.",
+    nominees:[
+      {name:"Melvin",img:"melvin.jpg"},
+      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Khodor",img:"khodor.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS \"FÖRLÅT FÖR JAG ÄR SEN\"",
+    winner:2,
+    desc:"Glider alltid in tjugo minuter sent med en pepsi i handen och ser helt oförstående ut. Tidsoptimist ut i fingerspetsarna som har en helt egen tidszon.",
+    nominees:[
+      {name:"Joshua",img:"joshua.jpg"},
+      {name:"Elvis",img:"elvis.jpg"},
+      {name:"Gabriel",img:"gab.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS SPORTFÅNE",
+    winner:0,
+    desc:"Tar idrottslektionerna på alldeles för stort allvar. Skriker och styr som om det vore VM-final i forboll, även under uppvärmningen.",
+    nominees:[
+      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Ahmed",img:"ahmed.jpg"},
+      {name:"Khodor",img:"khodor.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS PIFF & PUFF",
+    winner:2,
+    desc:"Helt oskiljaktiga. Sitter ihop som superlim i korridorerna och ingen har någonsin sett dem göra något på egen hand.",
+    nominees:[
+      {name:"Inez & Rakel",img:"ir.jpg"},
+      {name:"Melissa & Elin",img:"melissaelin.jpg"},
+      {name:"Wictor & Victor",img:"wictorvictor.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS LYXFÄLLA",
+    winner:1,
+    desc:"Lyckas bränna hela månadspengen på chips och godis under första veckan, sen får resten av gänget bjuda.",
+    nominees:[
+      {name:"Livia",img:"livia1.jpg"},
+      {name:"Ingmar",img:"ingmar.jpg"},
+      {name:"Abbe",img:"abbe.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS KOMIKER",
+    winner:1,
+    desc:"Har en helt egen humor som får alla att vika sig på lektionerna. Lärarna blir galna men klassen älskar det.",
+    nominees:[
+      {name:"Leo",img:"leo.jpg"},
+      {name:"Wictor",img:"wictor.jpg"},
+      {name:"Joshua",img:"joshua.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS SOCIAL STJÄRNA",
+    winner:2,
+    desc:"Känner precis alla i hela Sverige. Kan börja prata med vem som helst och bli kompis med dem på under två minuter.",
+    nominees:[
+      {name:"Abdulhai",img:"abdulhai.jpg"},
+      {name:"Rakel",img:"rakel.jpg"},
+      {name:"Alfred",img:"alfred.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS KRIGARE MOT SÖMN",
+    winner:1,
+    desc:"Kämpar för sitt liv för att hålla ögonen öppna under genomgångarna.",
+    nominees:[
+      {name:"Angelina",img:"angelina.jpg"},
+      {name:"Dejan",img:"dejan.jpg"},
+      {name:"Sven",img:"sven.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS SÅNGFÅGEL",
+    winner:2,
+    desc:"Ställer alltid upp för att sjunga solo och har siktet inställt på att bli nästa Ariana Grande. Vi måste ändå erkänna att rösten är riktigt bra.",
+    nominees:[
+      {name:"Alfred",img:"alfred.jpg"},
+      {name:"Joshua",img:"joshua.jpg"},
+      {name:"Melissa",img:"melissa.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS VAKNA PÅ FEL SIDA AV SÄNGEN",
+    winner:2,
+    desc:"Man ska helst inte prata med den här personen innan lunch, bjud inte på något under morgonen heller, risken är att du tappar livet.",
+    nominees:[
+      {name:"Joshua",img:"joshua.jpg"},
+      {name:"Konrad",img:"konrad.jpg"},
+      {name:"Melkyas",img:"melkyas.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS SOLSTRÅLE",
+    winner:1,
+    desc:"Alltid glad och positiv. Går i princip inte att göra sur eller irriterad, sprider bara bra energi till alla i klassen.",
+    nominees:[
+      {name:"Leo",img:"leo.jpg"},
+      {name:"Melvin",img:"melvin.jpg"},
+      {name:"Rakel",img:"rakel.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS TRYHARD",
+    winner:1,
+    desc:"Tar precis varje idrottslektion som om det vore Champions League-final. Skriker och tacklas, ger 110% på fotbollsplanen men 10% på alla andra lektioner.",
+    nominees:[
+      {name:"Khodor",img:"khodor.jpg"},
+      {name:"Ahmed",img:"ahmed.jpg"},
+      {name:"Abbe",img:"abbe.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS CHAFFIS",
+    winner:0,
+    desc:"Kör runt som om det vore racerbanan på parkeringen. Ingen förstår riktigt hur den här personen har kvar körkortet.",
+    nominees:[
+      {name:"Yngve",img:"yngve.jpg"},
+      {name:"Elmer",img:"elmer.jpg"},
+      {name:"Melina",img:"melina.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS SKRATT",
+    winner:2,
+    desc:"Ett extremt smittsamt skratt som hörs över precis hela skolan. Hör skrattet en gång så kommer du få mardrömmar om det resten av livet.",
+    nominees:[
+      {name:"Joshua",img:"joshua.jpg"},
+      {name:"Vilgot",img:"vilgot.jpg"},
+      {name:"Melkyas",img:"melkyas.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS NONCHALANT",
+    winner:0,
+    desc:"Klassens obryddaste person. Vägrar stressa upp sig över läxor, prov eller någonting annat överhuvudtaget.",
+    nominees:[
+      {name:"Dejan",img:"dejan2.jpg"},
+      {name:"Ahmed",img:"ahmed.jpg"},
+      {name:"Sven",img:"sven.jpg"}
+    ]
+  },
+  {
+    type:"category",
+    title:"ÅRETS SUGAR MOMMY",
+    winner:0,
+    desc:"Räddaren i nöden när kontot står på noll. Ställer alltid upp och swishar till fika eller lunch utan att tveka.",
+    nominees:[
+      {name:"Angelina",img:"angelina.jpg"},
+      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Ahmed",img:"ahmed.jpg"}
+    ]
+  },
+  {type:"intro", end: true}
+];
+
+const container=document.getElementById("slides");
+let current=0;
+let revealed=false;
+let videoFinished = false; 
+let timeoutIds = [];
+
+// Ändrad funktion: Returnerar den egna texten om den finns, annars standardmallen
+function generateDescription(slideData, name) {
+  if (slideData.desc && slideData.desc.trim() !== "") {
+    return slideData.desc;
+  }
+  return `Med en oslagbar energi och karisma har ${name} tagit hem titeln för ${slideData.title}. En sann förebild för hela klassen!`;
+}
+
+function createSlides(){
+  data.forEach((item,i)=>{
+    const slide=document.createElement("div");
+    slide.classList.add("slide");
+    if(i===0) slide.classList.add("active");
+
+    if(item.type==="intro" && !item.end){
+      slide.innerHTML=`<h1 class="metallic-text">NOMINERINGAR</h1><h2>2026</h2>`;
+    }
+
+    if(item.type==="category"){
+      slide.innerHTML=`<div class="zoom-container">
+        <div class="category metallic-text">${item.title}</div>
+        <div class="nominees">
+          ${item.nominees.map(n=>`<div class="nominee"><img src="${n.img}"><div>${n.name}</div></div>`).join("")}
+        </div>
+      </div>`;
+    }
+
+    if(item.type==="video"){
+      slide.innerHTML=`<div class="video-container">
+        <video src="${item.src}" preload="auto"></video>
+      </div>`;
+    }
+
+    if(item.end){
+      slide.innerHTML=`<div class="end metallic-text">TACK FÖR IKVÄLL</div>`;
+    }
+
+    container.appendChild(slide);
+  });
+}
+createSlides();
+
+const slides=document.querySelectorAll(".slide");
+
+function showNomineesAuto(){
+  const category = slides[current].querySelector('.category');
+  const nominees = slides[current].querySelectorAll('.nominee');
+  
+  if(category) category.classList.remove('move-up');
+  nominees.forEach(n => n.classList.remove('show'));
+
+  timeoutIds.push(setTimeout(()=>{ if(category) category.classList.add('move-up'); }, 1800));
+  timeoutIds.push(setTimeout(()=>{ nominees.forEach((n,i)=>{ timeoutIds.push(setTimeout(()=>{ n.classList.add('show'); }, i*2000)); }); }, 2600));
+}
+
+function showWinner(){
+  if(revealed) return;
+  const slideData=data[current];
+  if(slideData.type!=="category") return;
+
+  const slideEl = slides[current];
+  const zoom=slideEl.querySelector(".zoom-container");
+
+  if(zoom){
+    zoom.style.filter = "brightness(0.2) blur(10px)";
+    zoom.style.transform = "scale(1.1)";
+  }
+
+  const winner=slideData.nominees[slideData.winner];
+  const overlay=document.createElement("div");
+  overlay.className="fullscreen-winner";
+  
+  overlay.innerHTML=`
+    <div class="win-left">
+      <img src="${winner.img}">
+    </div>
+    <div class="win-right">
+      <div class="win-tag">Vinnare</div>
+      <div class="name metallic-text">${winner.name}</div>
+      <p class="win-description">${generateDescription(slideData, winner.name)}</p>
+    </div>
+  `;
+
+  setTimeout(()=>{ slideEl.appendChild(overlay); }, 500);
+  revealed = true;
+}
+
+function handleVideoSlide() {
+  const slideData = data[current];
+  const video = slides[current].querySelector('video');
+  
+  if(video) {
+    if(slideData.hasPlayed) {
+      video.pause();
+      video.currentTime = video.duration || 0; 
+      videoFinished = true; 
+    } else {
+      videoFinished = false; 
+      video.currentTime = 0;
+      video.play().catch(err => console.log("Autoplay blockerad:", err));
+      
+      video.onended = () => {
+        video.pause();
+        if(video.duration) video.currentTime = video.duration; 
+        videoFinished = true;
+        slideData.hasPlayed = true; 
+      };
+    }
+  }
+}
+
+function stopVideoSlide() {
+  const video = slides[current].querySelector('video');
+  if(video) {
+    video.pause();
+    video.onended = null;
+  }
+}
+
+function nextSlide(){
+  timeoutIds.forEach(clearTimeout);
+  timeoutIds = [];
+  
+  if(data[current].type === "video") {
+    stopVideoSlide();
+  }
+
+  const activeOverlay = slides[current].querySelector(".fullscreen-winner");
+  if(activeOverlay) activeOverlay.remove();
+
+  const zoom=slides[current].querySelector(".zoom-container");
+  if(zoom){
+    zoom.style.filter = "none";
+    zoom.style.transform = "none";
+  }
+
+  revealed=false;
+  slides[current].classList.remove("active");
+  current=(current+1)%slides.length;
+  slides[current].classList.add("active");
+
+  if(data[current].type==="category") showNomineesAuto();
+  if(data[current].type==="video") handleVideoSlide();
+}
+
+function prevSlide() {
+  timeoutIds.forEach(clearTimeout);
+  timeoutIds = [];
+
+  if(data[current].type === "video") {
+    stopVideoSlide();
+  }
+
+  const activeOverlay = slides[current].querySelector(".fullscreen-winner");
+  if(activeOverlay) activeOverlay.remove();
+
+  const zoom=slides[current].querySelector(".zoom-container");
+  if(zoom){
+    zoom.style.filter = "none";
+    zoom.style.transform = "none";
+  }
+
+  revealed=false;
+  slides[current].classList.remove("active");
+  
+  current = (current - 1 + slides.length) % slides.length;
+  slides[current].classList.add("active");
+
+  if(data[current].type==="category") showNomineesAuto();
+  if(data[current].type==="video") handleVideoSlide();
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.code==="Space" || e.code==="ArrowRight") {
+    e.preventDefault();
+    
+    if(data[current].type === "video" && !videoFinished) {
+      return; 
+    }
+
+    if(data[current].type==="category" && !revealed){
+      showWinner();
+    } else {
+      nextSlide();
+    }
+  }
+  
+  if(e.code==="Backspace" || e.code==="ArrowLeft") {
+    e.preventDefault();
+    prevSlide();
+  }
+});
+</script>
+</body>
+</html>
