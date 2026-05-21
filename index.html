@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nomineringar 2026</title>
+<title>Nomineringar & Balspel 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root { 
@@ -23,7 +23,6 @@ body {
   height: 100vh;
 }
 
-/* Bubblorna - Diskreta */
 .lights-container {
   position: absolute;
   width: 100%; height: 100%;
@@ -127,13 +126,12 @@ h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
   transition: all 1.2s cubic-bezier(.2,.8,.2,1);
 }
 
-/* UPPDATERAD VINNARRUTA ENLIGT BILD */
 .fullscreen-winner {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   display: flex;
-  flex-direction: row; /* Sid-vid-sid layout */
+  flex-direction: row; 
   justify-content: center;
   align-items: center;
   gap: 8vw;
@@ -145,7 +143,6 @@ h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
   text-align: left;
 }
 
-/* Vänster sida: Den runda bilden från din referens */
 .win-left {
   flex: 0 0 auto;
   display: flex;
@@ -158,11 +155,10 @@ h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
   max-width: 420px; max-height: 420px;
   border: 0.5vh solid var(--gold); 
   box-shadow: 0 0 5vh rgba(245, 210, 122, 0.3);
-  border-radius: 50%; /* Gör bilden helt rund */
+  border-radius: 50%; 
   object-fit: cover;
 }
 
-/* Höger sida: Textblocket */
 .win-right {
   flex: 1;
   display: flex;
@@ -172,7 +168,6 @@ h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
   max-width: 600px;
 }
 
-/* Den gula "VINNARE"-etiketten */
 .win-tag {
   background-color: #cfb53b;
   color: #000;
@@ -192,7 +187,7 @@ h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
 }
 
 .win-description {
-  font-family: sans-serif; /* Renare typsnitt för brödtext som på bilden */
+  font-family: sans-serif; 
   font-size: 2.2vh;
   line-height: 1.6;
   color: #fff;
@@ -200,20 +195,84 @@ h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
   margin: 0;
 }
 
-/* Hälsningsvideo container */
 .video-container {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   background: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; justify-content: center; align-items: center;
 }
 
 .video-container video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width: 100%; height: 100%; object-fit: contain;
+}
+
+/* STYLING FÖR GISSA 9AN SPELET */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3vh;
+}
+
+.game-number {
+  font-size: 10vh;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.game-frame {
+  position: relative;
+  width: 45vh; height: 45vh;
+  max-width: 400px; max-height: 400px;
+  border: 0.5vh solid var(--gold);
+  border-radius: 2vh;
+  overflow: hidden;
+  box-shadow: 0 2px 30px rgba(245,210,122,0.2);
+}
+
+.game-frame img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.game-instruction {
+  font-size: 3vh;
+  opacity: 0.8;
+}
+
+.answer-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6vw;
+  animation: fadeIn 0.5s ease;
+}
+
+.answer-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+}
+
+.answer-box .game-frame {
+  border-radius: 50%; /* Rund fasitsbild */
+}
+
+.answer-text-block {
+  text-align: left;
+}
+
+.answer-title {
+  font-size: 4vh;
+  color: #fff;
+  margin-bottom: 1vh;
+}
+
+.answer-name {
+  font-size: 8vh;
+  text-transform: uppercase;
+  margin: 0;
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -232,9 +291,8 @@ h2 { font-size: 3vh; opacity: .8; margin: 1vh 0 0 0; }
 <div id="slides"></div>
 
 <script>
-// HÄR KAN DU SKRIVA DINA EGNA KOMMENTARER PÅ 'desc'. 
-// Om du inte skriver något på 'desc' så används standardmallen automatiskt.
-const data=[
+// ALL DATA FÖR DINA NOMINERINGAR
+const nomineesData=[
   {type:"intro"},
   {
     type:"category",
@@ -262,9 +320,9 @@ const data=[
     type:"category",
     title:"ÅRETS 9A",
     winner:0,
-    desc:"Ingen diskussion överhuvudtaget, vinsten var spikad sedan dag ett. Hela gänget vet exakt vem som har styrt upp stämningen det här året.", // Lämnar du den tom så körs din gamla standardmall
+    desc:"Ingen diskussion överhuvudtaget, vinsten var spikad sedan dag ett. Hela gänget vet exakt vem som har styrt upp stämningen det här året.",
     nominees:[
-      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Abbe",img:"abbe2.jpg"},
       {name:"Alfred",img:"alfred.jpg"},
       {name:"Runa",img:"runa.jpg"}
     ]
@@ -282,7 +340,7 @@ const data=[
   },
   {
     type:"video",
-    src:"https://i.imgur.gg/KXN15hr-ulrika.mp4",
+    src:"https://i.imgur.gg/5YSq10Z-ullis.mp4",
     hasPlayed: false
   },
   {
@@ -300,7 +358,7 @@ const data=[
     type:"category",
     title:"ÅRETS EPA RAGGARE",
     winner:2,
-    desc:"Skolans utan tvekan mest högljudda bas. Man hör exakt när den här personen svänger in på parkeringen på morgonen, flera minuter innan man faktiskt ser bilen.",
+    desc:"Skolans utan tvekan mest högljudda bas. Man hör exakt när den här personen svänger in på parkeringen på morgonen, several minuter innan man faktiskt ser bilen.",
     nominees:[
       {name:"Yngve",img:"yngve.jpg"},
       {name:"Elmer",img:"elmer.jpg"},
@@ -314,14 +372,14 @@ const data=[
     desc:"De på Coop tror nog att han jobbar där vid det här laget. Har spenderat mer pengar på energidryck än på mat.",
     nominees:[
       {name:"Ingmar",img:"ingmar.jpg"},
-      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Abbe",img:"abbe3.jpg"},
       {name:"Ahmed",img:"ahmed.jpg"}
     ]
   },
   {
     type:"category",
     title:"ÅRETS \"VA ÄR DET PROV\"",
-    winner:1,
+    winner:0,
     desc:"Kommer alltid på att det är prov 5 minuter efter att det har börjat.",
     nominees:[
       {name:"Melkyas",img:"melkyas.jpg"},
@@ -344,10 +402,10 @@ const data=[
     type:"category",
     title:"ÅRETS PLAYER",
     winner:2,
-    desc:"Har ett halvt dussin olika tjejer på sin Snapchat samtidigt. Skärmtiden består till 90% av att svara på snaps.",
+    desc:"Har ett halvt dussin olika tjejer på sua Snapchat samtidigt. Skärmtiden består till 90% av att svara på snaps.",
     nominees:[
-      {name:"Melvin",img:"melvin.jpg"},
-      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Melvin",img:"melvin2.jpg"},
+      {name:"Abbe",img:"abbe2.jpg"},
       {name:"Khodor",img:"khodor.jpg"}
     ]
   },
@@ -366,9 +424,9 @@ const data=[
     type:"category",
     title:"ÅRETS SPORTFÅNE",
     winner:0,
-    desc:"Tar idrottslektionerna på alldeles för stort allvar. Skriker och styr som om det vore VM-final i forboll, även under uppvärmningen.",
+    desc:"Tar idrottslektionerna på alldeles för stort allvar. Skriker och styr som om det vore VM-final i fotboll, även under uppvärmningen.",
     nominees:[
-      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Abbe",img:"abbe3.jpg"},
       {name:"Ahmed",img:"ahmed.jpg"},
       {name:"Khodor",img:"khodor.jpg"}
     ]
@@ -387,12 +445,12 @@ const data=[
   {
     type:"category",
     title:"ÅRETS LYXFÄLLA",
-    winner:1,
+    winner:2,
     desc:"Lyckas bränna hela månadspengen på chips och godis under första veckan, sen får resten av gänget bjuda.",
     nominees:[
       {name:"Livia",img:"livia1.jpg"},
       {name:"Ingmar",img:"ingmar.jpg"},
-      {name:"Abbe",img:"abbe.jpg"}
+      {name:"Melissa",img:"melissa.jpg"}
     ]
   },
   {
@@ -464,7 +522,7 @@ const data=[
   {
     type:"category",
     title:"ÅRETS TRYHARD",
-    winner:1,
+    winner:0,
     desc:"Tar precis varje idrottslektion som om det vore Champions League-final. Skriker och tacklas, ger 110% på fotbollsplanen men 10% på alla andra lektioner.",
     nominees:[
       {name:"Khodor",img:"khodor.jpg"},
@@ -486,19 +544,19 @@ const data=[
   {
     type:"category",
     title:"ÅRETS SKRATT",
-    winner:2,
+    winner:0,
     desc:"Ett extremt smittsamt skratt som hörs över precis hela skolan. Hör skrattet en gång så kommer du få mardrömmar om det resten av livet.",
     nominees:[
       {name:"Joshua",img:"joshua.jpg"},
       {name:"Vilgot",img:"vilgot.jpg"},
-      {name:"Melkyas",img:"melkyas.jpg"}
+      {name:"Melkyas",img:"melkyas2.jpg"}
     ]
   },
   {
     type:"category",
     title:"ÅRETS NONCHALANT",
     winner:0,
-    desc:"Klassens obryddaste person. Vägrar stressa upp sig över läxor, prov eller någonting annat överhuvudtaget.",
+    desc:"Den personen som just vägrar stressa upp sig över läxor, prov eller någonting annat överhuvudtaget.",
     nominees:[
       {name:"Dejan",img:"dejan2.jpg"},
       {name:"Ahmed",img:"ahmed.jpg"},
@@ -512,12 +570,71 @@ const data=[
     desc:"Räddaren i nöden när kontot står på noll. Ställer alltid upp och swishar till fika eller lunch utan att tveka.",
     nominees:[
       {name:"Angelina",img:"angelina.jpg"},
-      {name:"Abbe",img:"abbe.jpg"},
+      {name:"Abbe",img:"abbe2.jpg"},
       {name:"Ahmed",img:"ahmed.jpg"}
     ]
-  },
-  {type:"intro", end: true}
+  }
 ];
+
+/* HÄR LÄGGER DU IN BILDER OCH SVAR FÖR DE 18 STYCKEN 9:ORNA!
+  'babyImg': Filnamnet på bilden när de var små.
+  'realImg': Filnamnet på bilden som de ser ut idag (visas i facit).
+  'name': Det rätta namnet.
+*/
+const gameData = [
+  { id: 1, babyImg: "melkyasbarn.jpg", realImg: "melkyasbarn.jpg", name: "Melkyas" },
+  { id: 2, babyImg: "melvinbarn.jpg", realImg: "melvinbarn.jpg", name: "Melvin" },
+  { id: 3, babyImg: "runabarn.jpg", realImg: "runabarn.jpg", name: "Runa" },
+  { id: 4, babyImg: "mariebarn.jpg", realImg: "mariebarn.jpg", name: "Marie" },
+  { id: 5, babyImg: "wictorbarn.jpg", realImg: "wictorbarn.jpg", name: "Wictor" },
+  { id: 6, babyImg: "alfredbarn.jpg", realImg: "alfredbarn.jpg", name: "Alfred" },
+  { id: 7, babyImg: "elinbarn.jpg", realImg: "elinbarn.jpg", name: "Elin" },
+  { id: 8, babyImg: "elmerbarn.jpg", realImg: "elmerbarn.jpg", name: "Elmer" },
+  { id: 9, babyImg: "dejanbarn.jpg", realImg: "dejanbarn.jpg", name: "Dejan" },
+  { id: 10, babyImg: "abbebarn.jpg", realImg: "abbebarn.jpg", name: "Abbe" },
+  { id: 11, babyImg: "perlabarn.jpg", realImg: "perlabarn.jpg", name: "Perla" },
+  { id: 12, babyImg: "rahmabarn.jpg", realImg: "rahmabarn.jpg", name: "Rahma" },
+  { id: 13, babyImg: "victorbarn.jpg", realImg: "victorbarn.jpg", name: "Victor" },
+  { id: 14, babyImg: "yngvebarn.jpg", realImg: "yngvebarn.jpg", name: "Yngve" },
+  { id: 15, babyImg: "melinabarn.jpg", realImg: "melinabarn.jpg", name: "Melina" },
+  { id: 16, babyImg: "alvebarn.jpg", realImg: "alvebarn.jpg", name: "Alve" },
+  { id: 17, babyImg: "yebarn.jpg", realImg: "yebarn.jpg", name: "Ye" }
+];
+
+// BYGGER SAMMAN DEN TOTALA SPELLISTAN AUTOMATISKT
+const data = [];
+
+// 1. Lägg till nomineringar först
+nomineesData.forEach(item => data.push(item));
+
+// 2. Lägg till intro-slide för spelet "Gissa 9an"
+data.push({ type: "game-intro" });
+
+// 3. Lägg till alla 18 gissnings-slides
+gameData.forEach(item => {
+  data.push({
+    type: "game-guess",
+    id: item.id,
+    babyImg: item.babyImg
+  });
+});
+
+// 4. Lägg till intro-slide för rätta svaren
+data.push({ type: "game-answers-intro" });
+
+// 5. Lägg till alla 18 facit-slides
+gameData.forEach(item => {
+  data.push({
+    type: "game-answer",
+    id: item.id,
+    realImg: item.realImg,
+    name: item.name
+  });
+});
+
+// 6. Avslutning
+data.push({ type: "intro", end: true });
+
 
 const container=document.getElementById("slides");
 let current=0;
@@ -525,7 +642,6 @@ let revealed=false;
 let videoFinished = false; 
 let timeoutIds = [];
 
-// Ändrad funktion: Returnerar den egna texten om den finns, annars standardmallen
 function generateDescription(slideData, name) {
   if (slideData.desc && slideData.desc.trim() !== "") {
     return slideData.desc;
@@ -539,10 +655,15 @@ function createSlides(){
     slide.classList.add("slide");
     if(i===0) slide.classList.add("active");
 
+    // Intro & Outro
     if(item.type==="intro" && !item.end){
       slide.innerHTML=`<h1 class="metallic-text">NOMINERINGAR</h1><h2>2026</h2>`;
     }
+    if(item.type==="intro" && item.end){
+      slide.innerHTML=`<div class="end metallic-text">GRATTIS TILL ALLA VINNARE!</div>`;
+    }
 
+    // Kategorier / Nomineringar
     if(item.type==="category"){
       slide.innerHTML=`<div class="zoom-container">
         <div class="category metallic-text">${item.title}</div>
@@ -552,14 +673,60 @@ function createSlides(){
       </div>`;
     }
 
+    // Video-slide
     if(item.type==="video"){
       slide.innerHTML=`<div class="video-container">
         <video src="${item.src}" preload="auto"></video>
       </div>`;
     }
 
-    if(item.end){
-      slide.innerHTML=`<div class="end metallic-text">TACK FÖR IKVÄLL</div>`;
+    // NYTT: Gissa 9an Startskärm
+    if(item.type==="game-intro") {
+      slide.innerHTML=`
+        <h1 class="metallic-text">GISSA 9AN</h1>
+        <h2 style="text-transform: none; font-family: sans-serif; max-width: 600px; margin-top: 3vh; line-height: 1.6;">
+          Ta fram papper och penna! En barnbild visas på 18 olika personer som går i nian. Skriv ner numret och namnet på den du tror det är.
+        </h2>
+      `;
+    }
+
+    // NYTT: Enskild gissningsbild (1-18)
+    if(item.type==="game-guess") {
+      slide.innerHTML=`
+        <div class="game-container">
+          <div class="game-number metallic-text">#${item.id}</div>
+          <div class="game-frame">
+            <img src="${item.babyImg}" alt="Vem är barnet?">
+          </div>
+          <div class="game-instruction">Skriv din gissning på papperet...</div>
+        </div>
+      `;
+    }
+
+    // NYTT: Rätta svaren Startskärm
+    if(item.type==="game-answers-intro") {
+      slide.innerHTML=`
+        <h1 class="metallic-text">RÄTTA SVAREN</h1>
+        <h2>Dags att se vem som hade flest rätt!</h2>
+      `;
+    }
+
+    // NYTT: Enskilt facit / Rätt svar (1-18)
+    if(item.type==="game-answer") {
+      slide.innerHTML=`
+        <div class="answer-container">
+          <div class="answer-box">
+            <div class="game-number metallic-text" style="font-size: 6vh;">#${item.id}</div>
+            <div class="game-frame">
+              <img src="${item.realImg}" alt="${item.name}">
+            </div>
+          </div>
+          <div class="answer-text-block">
+            <div class="answer-title">Rätt svar är:</div>
+            <h1 class="answer-name metallic-text">${item.name}</h1>
+          </div>
+        </div>
+      `;
     }
 
     container.appendChild(slide);
@@ -577,7 +744,7 @@ function showNomineesAuto(){
   nominees.forEach(n => n.classList.remove('show'));
 
   timeoutIds.push(setTimeout(()=>{ if(category) category.classList.add('move-up'); }, 1800));
-  timeoutIds.push(setTimeout(()=>{ nominees.forEach((n,i)=>{ timeoutIds.push(setTimeout(()=>{ n.classList.add('show'); }, i*2000)); }); }, 2600));
+  timeoutIds.push(setTimeout(()=>{ nominees.forEach((n,i)=>{ timeoutIds.push(setTimeout(()=>{ n.classList.add('show'); }, i*2700)); }); }, 2600));
 }
 
 function showWinner(){
